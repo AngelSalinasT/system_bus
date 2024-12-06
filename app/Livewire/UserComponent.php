@@ -49,40 +49,56 @@ class UserComponent extends Component
         $this->resetFields();
     }
 
-    // Cargar datos de un usuario para edición
-    public function edit($id)
-    {
-        $user = User::findOrFail($id);
-        $this->user_id = $user->id;
-        $this->name = $user->name;
-        $this->email = $user->email;
-        $this->isEditMode = true;
-    }
-
-    // Actualizar un usuario
-    public function update()
+    // Crear nuevo usuario
+    public function createUser()
     {
         $this->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->user_id,
-            'password' => 'nullable|min:8|same:password_confirmation',
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
         ]);
 
-        $user = User::findOrFail($this->user_id);
-        $user->update([
+        User::create([
             'name' => $this->name,
             'email' => $this->email,
-            'password' => $this->password ? Hash::make($this->password) : $user->password,
+            'password' => bcrypt('password'), // Contraseña por defecto
         ]);
 
-        session()->flash('success', 'User updated successfully.');
+        session()->flash('message', 'User created successfully.');
         $this->resetFields();
     }
 
-    // Eliminar un usuario
-    public function delete($id)
+    public function editUser($id)
     {
-        User::findOrFail($id)->delete();
-        session()->flash('success', 'User deleted successfully.');
+        $user = User::find($id);
+        $this->name = $user->name;      // Asigna el nombre al formulario
+        $this->email = $user->email;    // Asigna el email al formulario
+        $this->user_id = $user->id;      // Guarda el ID del usuario
+        $this->isEditMode = true;       // Cambia a modo de edición
+    }
+
+
+    // Actualizar usuario
+    public function updateUser()
+    {
+        $this->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $this->user_id,
+        ]);
+
+        $user = User::find($this->user_id);
+        $user->update([
+            'name' => $this->name,
+            'email' => $this->email,
+        ]);
+
+        session()->flash('message', 'User updated successfully.');
+        $this->resetFields();
+    }
+
+    // Eliminar usuario
+    public function deleteUser($id)
+    {
+        User::find($id)->delete();
+        session()->flash('message', 'User deleted successfully.');
     }
 }

@@ -1,54 +1,85 @@
 <div>
-    <div class="p-6 max-w-md mx-auto bg-white shadow rounded-lg">
-        <form wire:submit.prevent="store" class="space-y-4">
-            <!-- Nombre -->
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" id="name" wire:model="name" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
+    <h2 class="text-3xl font-semibold mb-6">Users</h2>
 
-            <!-- Correo -->
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="email" wire:model="email" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
+    <!-- Mensaje de éxito o error -->
+    @if (session()->has('message'))
+        <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-md mb-4">
+            {{ session('message') }}
+        </div>
+    @endif
 
-            <!-- Contraseña -->
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" id="password" wire:model="password" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
+    <!-- Botón para crear un nuevo usuario -->
+    <button wire:click="resetFields" class="btn btn-primary mb-4 bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
+        Add New User
+    </button>
 
-            <!-- Botón -->
-            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg shadow hover:bg-indigo-700">
-                Submit
-            </button>
-        </form>
-    </div>
+    @if ($isEditMode)
+    <!-- Formulario de edición de usuario -->
+    <form wire:submit.prevent="updateUser" class="space-y-4">
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" wire:model="name" id="name" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Name">
+        </div>
 
-    <!-- Tabla de usuarios -->
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($users as $user)
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" wire:model="email" id="email" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Email">
+        </div>
+
+        <button type="submit" class="btn btn-success bg-green-700 text-black px-4 py-2 rounded-md shadow-sm hover:bg-green-600">
+            Update User
+        </button>
+        
+    </form>
+@else
+    <!-- Formulario de creación de usuario -->
+    <form wire:submit.prevent="createUser" class="space-y-4">
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" wire:model="name" id="name" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Name">
+        </div>
+
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" wire:model="email" id="email" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Email">
+        </div>
+
+        <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
+            Create User
+        </button>
+    </form>
+@endif
+
+
+    <!-- Lista de usuarios -->
+    <div class="mt-6">
+        <table class="table-auto w-full border-separate border-spacing-2">
+            <thead>
                 <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>
-                        <button wire:click="edit({{ $user->id }})">Edit</button>
-                        <button wire:click="delete({{ $user->id }})">Delete</button>
-                    </td>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Name</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Email</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Password</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Actions</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach($users as $user)
+                    <tr>
+                        <td class="px-4 py-2 text-sm">{{ $user->name }}</td>
+                        <td class="px-4 py-2 text-sm">{{ $user->email }}</td>
+                        <td class="px-4 py-2 text-sm">{{ $user->password }}</td>
+                        <td class="px-4 py-2 text-sm">
+                            <button wire:click="editUser({{ $user->id }})" class="btn btn-info bg-yellow-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-yellow-600">
+                                Edit
+                            </button>
+                            <button wire:click="editUser({{ $user->id }})" class="bg-red-500 text-white px-4 py-2 rounded-md shadow-sm">
+                                Delete
+                            </button>
+
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
