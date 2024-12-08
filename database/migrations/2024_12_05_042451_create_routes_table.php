@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('routes', function (Blueprint $table) {
             $table->id(); // Primary key
+            $table->string('route_name'); // Route origin
             $table->string('origin'); // Route origin
             $table->string('destination'); // Route destination
             $table->decimal('distance', 10, 2)->nullable(); // Distance in km
