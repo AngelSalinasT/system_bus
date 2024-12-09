@@ -6,6 +6,12 @@
         </div>
     @endif
 
+    <!-- Botón para regresar al formulario de creación -->
+    <button wire:click="resetFields"
+        class="btn btn-primary mb-4 mt-6 bg-blue-800 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
+        Add New Schedule
+    </button>
+
     <!-- Formulario de creación/edición -->
     <form wire:submit.prevent="{{ $isEditMode ? 'updateSchedule' : 'createSchedule' }}" class="space-y-4 max-w-md mx-auto">
         <div>
@@ -75,8 +81,8 @@
                         <td class="px-4 py-2">{{ $schedule->departure_time }}</td>
                         <td class="px-4 py-2">{{ $schedule->arrival_time }}</td>
                         <td class="px-4 py-2">
-                            <button wire:click="editSchedule({{ $schedule->id }})" class="bg-yellow-400 text-white px-4 py-2 rounded-md">Edit</button>
-                            <button wire:click="deleteSchedule({{ $schedule->id }})" class="bg-red-400 text-white px-4 py-2 rounded-md">Delete</button>
+                            <button wire:click="editSchedule({{ $schedule->id }})" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md">Edit</button>
+                            <button wire:click="deleteSchedule({{ $schedule->id }})" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">Delete</button>
                         </td>
                     </tr>
                 @endforeach
