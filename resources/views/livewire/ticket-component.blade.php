@@ -1,7 +1,7 @@
 <div>
     <!-- Mensaje de éxito -->
     @if (session()->has('message'))
-        <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-md mb-4">
+        <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-md mt-6 mb-4">
             {{ session('message') }}
         </div>
     @endif
@@ -36,7 +36,7 @@
             <select wire:model="schedule_id" id="schedule_id" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
                 <option value="">-- Select Schedule --</option>
                 @foreach ($schedules as $schedule)
-                    <option value="{{ $schedule->id }}">{{ $schedule->departure_time }} - {{ $schedule->bus->plates }} - {{ $schedule->bus->model }}</option>
+                    <option value="{{ $schedule->id }}">{{ $schedule->departure_time }} - {{ $schedule->bus->license_plate }} - {{ $schedule->bus->model }}</option>
                 @endforeach
             </select>
             @error('schedule_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
@@ -64,7 +64,6 @@
         <table class="table-auto w-full border-separate border-spacing-2">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Ticket Number</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Passenger Name</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Passenger Email</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Seat Number</th>
@@ -76,12 +75,11 @@
             <tbody>
                 @foreach($tickets as $ticket)
                     <tr>
-                        <td class="px-4 py-2 text-sm">{{ $ticket->generateTicketNumber() }}</td> <!-- Generación dinámica del ticket_number -->
                         <td class="px-4 py-2 text-sm">{{ $ticket->passenger_name }}</td>
                         <td class="px-4 py-2 text-sm">{{ $ticket->passenger_email }}</td>
                         <td class="px-4 py-2 text-sm">{{ $ticket->seat_number }}</td>
-                        <td class="px-4 py-2 text-sm">{{ $ticket->schedule->departure_time }} - {{ $ticket->schedule->bus->license_plate }} - {{ $ticket->schedule->bus->model }}</td> <!-- Relación con schedule -->
-                        <td class="px-4 py-2 text-sm">{{ $ticket->user->name }} - {{ $ticket->user->email }}</td> <!-- Relación con user -->
+                        <td class="px-4 py-2 text-sm">{{ $ticket->schedule->departure_time }} - {{ $ticket->schedule->bus->license_plate }} - {{ $ticket->schedule->bus->model }}</td>
+                        <td class="px-4 py-2 text-sm">{{ $ticket->user->name }} - {{ $ticket->user->email }}</td>
                         <td class="px-4 py-2 text-sm">
                             <button wire:click="editTicket({{ $ticket->id }})" class="btn btn-info bg-yellow-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-yellow-600">
                                 Edit

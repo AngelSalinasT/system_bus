@@ -8,24 +8,21 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\BranchController;
 
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::middleware([
-    'auth:sanctum',
+    'auth:sanctum', // Asegura que el usuario esté autenticado mediante Sanctum
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
+    // Ruta de dashboard
+    Route::get('/', function () {
         return view('dashboard');
     })->name('dashboard');
-});
 
-Route::resource('users', UserController::class);
-Route::resource('buses', BusController::class);
-Route::resource('routes', RouteController::class);
-Route::resource('schedules', ScheduleController::class);
-Route::resource('tickets', TicketController::class);
-Route::resource('branches', BranchController::class);
+    // Rutas que necesitan autenticación
+    Route::resource('users', UserController::class);
+    Route::resource('buses', BusController::class);
+    Route::resource('routes', RouteController::class);
+    Route::resource('schedules', ScheduleController::class);
+    Route::resource('tickets', TicketController::class);
+    Route::resource('branches', BranchController::class);
+});

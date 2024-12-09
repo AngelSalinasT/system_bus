@@ -2,7 +2,7 @@
 
     <!-- Mensaje de éxito o error -->
     @if (session()->has('message'))
-        <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-md mb-4">
+        <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-md mt-6 mb-4">
             {{ session('message') }}
         </div>
     @endif
