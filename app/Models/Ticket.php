@@ -14,25 +14,19 @@ class Ticket extends Model
         'passenger_name',
         'passenger_email',
         'seat_number',
-        'bus_id',
-        'user_id',  // ID del cliente que compra el boleto
+        'schedule_id',  // Cambiado a schedule_id
+        'user_id',      // ID del cliente que compra el boleto
     ];
 
-    // Relación con el bus
-    public function bus()
+    // Relación con el horario
+    public function schedule()
     {
-        return $this->belongsTo(Bus::class);
+        return $this->belongsTo(Schedule::class, 'schedule_id');  // Relación con el horario
     }
 
     // Relación con el usuario que compra el boleto
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    // Método para generar un ticket number dinámicamente
-    public function generateTicketNumber()
-    {
-        return 'TICKET-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
     }
 }

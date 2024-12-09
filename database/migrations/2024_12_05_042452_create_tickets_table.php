@@ -13,7 +13,7 @@ class CreateTicketsTable extends Migration
             $table->string('passenger_name')->nullable(); // Passenger's name (nullable if same as user)
             $table->string('passenger_email')->nullable(); // Passenger's email (nullable if same as user)
             $table->integer('seat_number'); // Seat number
-            $table->foreignId('bus_id')->constrained()->onDelete('cascade'); // Foreign key to buses table
+            $table->foreignId('schedule_id')->constrained('schedules')->onDelete('cascade'); // Foreign key to schedules table
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key to users table
             $table->timestamps(); // created_at and updated_at
         });

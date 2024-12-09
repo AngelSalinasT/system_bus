@@ -32,14 +32,26 @@
         </div>
 
         <div>
-            <label for="bus_id" class="block text-sm font-medium text-gray-700">Bus</label>
-            <select wire:model="bus_id" id="bus_id" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
-                <option value="">-- Select Bus --</option>
-                @foreach ($buses as $bus)
-                    <option value="{{ $bus->id }}">{{ $bus->license_plate }} - {{ $bus->model }}</option>
+            <label for="schedule_id" class="block text-sm font-medium text-gray-700">Schedule</label>
+            <select wire:model="schedule_id" id="schedule_id" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
+                <option value="">-- Select Schedule --</option>
+                @foreach ($schedules as $schedule)
+                    <option value="{{ $schedule->id }}">{{ $schedule->departure_time }} - {{ $schedule->bus->plates }} - {{ $schedule->bus->model }}</option>
                 @endforeach
             </select>
-            @error('bus_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            @error('schedule_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+        </div>
+
+        <!-- Campo para seleccionar el usuario -->
+        <div>
+            <label for="user_id" class="block text-sm font-medium text-gray-700">User</label>
+            <select wire:model="user_id" id="user_id" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
+                <option value="">-- Select User --</option>
+                @foreach ($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }} - {{ $user->email }}</option>
+                @endforeach
+            </select>
+            @error('user_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
@@ -56,7 +68,8 @@
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Passenger Name</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Passenger Email</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Seat Number</th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Bus</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Schedule</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">User</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Actions</th>
                 </tr>
             </thead>
@@ -67,7 +80,8 @@
                         <td class="px-4 py-2 text-sm">{{ $ticket->passenger_name }}</td>
                         <td class="px-4 py-2 text-sm">{{ $ticket->passenger_email }}</td>
                         <td class="px-4 py-2 text-sm">{{ $ticket->seat_number }}</td>
-                        <td class="px-4 py-2 text-sm">{{ $ticket->bus->license_plate }} - {{ $ticket->bus->model }}</td>
+                        <td class="px-4 py-2 text-sm">{{ $ticket->schedule->departure_time }} - {{ $ticket->schedule->bus->license_plate }} - {{ $ticket->schedule->bus->model }}</td> <!-- Relación con schedule -->
+                        <td class="px-4 py-2 text-sm">{{ $ticket->user->name }} - {{ $ticket->user->email }}</td> <!-- Relación con user -->
                         <td class="px-4 py-2 text-sm">
                             <button wire:click="editTicket({{ $ticket->id }})" class="btn btn-info bg-yellow-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-yellow-600">
                                 Edit
