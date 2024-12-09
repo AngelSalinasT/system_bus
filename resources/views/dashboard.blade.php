@@ -5,12 +5,11 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 pt-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg max-w-md mx-auto pt-8" >
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-8 lg:px-12"> <!-- Ajustar padding -->
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg px-10 py-8"> <!-- Más espacio interior -->
                 @livewire('dashboard-component')
             </div>
         </div>
     </div>
-
 </x-app-layout>
