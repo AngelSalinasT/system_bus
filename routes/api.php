@@ -14,11 +14,16 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('schedules', ScheduleController::class);
-    Route::apiResource('tickets', TicketController::class);
-    Route::apiResource('routes', RouteController::class);
-    Route::apiResource('buses', BusController::class);
-    Route::apiResource('branches', BranchController::class);
-
+    Route::get('users', [UserController::class, 'apiIndex']);
+    Route::apiResource('users', UserController::class)->except('index');
+    Route::get('schedules', [UserController::class, 'apiIndex']);
+    Route::apiResource('schedules', ScheduleController::class)->except('index');
+    Route::get('tickets', [UserController::class, 'apiIndex']);
+    Route::apiResource('tickets', TicketController::class)->except('index');
+    Route::get('routes', [UserController::class, 'apiIndex']);
+    Route::apiResource('routes', RouteController::class)->except('index');
+    Route::get('buses', [UserController::class, 'apiIndex']);
+    Route::apiResource('buses', BusController::class)->except('index');
+    Route::get('branches', [UserController::class, 'apiIndex']);
+    Route::apiResource('branches', BranchController::class)->except('index');
 });
