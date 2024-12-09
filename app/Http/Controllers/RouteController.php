@@ -6,6 +6,9 @@ use App\Models\Route;
 use App\Models\Branch;
 use App\Http\Resources\RouteCollection;
 use App\Filters\RouteFilter;
+use App\Http\Requests\StoreRouteRequest;
+use App\Http\Requests\UpdateRouteRequest;
+use App\Http\Resources\RouteResource;
 use Illuminate\Http\Request;
 
 class RouteController extends Controller
@@ -25,27 +28,8 @@ class RouteController extends Controller
     }
 
     // Almacenar una nueva ruta en la base de datos
-    public function store(Request $request)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'origin' => 'required|string|max:255',
-            'destination' => 'required|string|max:255',
-            'distance' => 'nullable|numeric',
-            'estimated_time' => 'nullable',
-            'branch_id' => 'required|exists:branches,id', // Verificar que la sucursal exista
-        ]);
-
-        // Crear la nueva ruta
-        Route::create([
-            'origin' => $request->origin,
-            'destination' => $request->destination,
-            'distance' => $request->distance,
-            'estimated_time' => $request->estimated_time,
-            'branch_id' => $request->branch_id,
-        ]);
-
-        return redirect()->route('routes.index')->with('success', 'Route created successfully.');
+    public function Store(StoreRouteRequest $request){
+        return new RouteResource(Route::create($request->all()));
     }
 
     // Mostrar el formulario para editar una ruta
@@ -57,27 +41,8 @@ class RouteController extends Controller
     }
 
     // Actualizar una ruta en la base de datos
-    public function update(Request $request, $id)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'origin' => 'required|string|max:255',
-            'destination' => 'required|string|max:255',
-            'distance' => 'nullable|numeric',
-            'estimated_time' => 'nullable',
-            'branch_id' => 'required|exists:branches,id', // Verificar que la sucursal exista
-        ]);
-
-        $route = Route::findOrFail($id); // Buscar la ruta por su ID
-        $route->update([
-            'origin' => $request->origin,
-            'destination' => $request->destination,
-            'distance' => $request->distance,
-            'estimated_time' => $request->estimated_time,
-            'branch_id' => $request->branch_id,
-        ]);
-
-        return redirect()->route('routes.index')->with('success', 'Route updated successfully.');
+    public function update(UpdateRouteRequest $request, Route $Route){
+        $Route->update($request->all());
     }
 
     // Eliminar una ruta
@@ -99,4 +64,5 @@ class RouteController extends Controller
         }
         return new RouteCollection($routes->paginate()->appends($request->query()));
     }
+
 }

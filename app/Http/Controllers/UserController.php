@@ -26,23 +26,8 @@ class UserController extends Controller
     }
 
     // Almacenar un nuevo usuario en la base de datos
-    public function store(Request $request)
-    {
-        // Validación de datos
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        // Crear el nuevo usuario
-        User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']), // Encriptar la contraseña
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+    public function Store(StoreUserRequest $request){
+        return new UserResource(User::create($request->all()));
     }
 
     // Mostrar el formulario para editar un usuario
@@ -53,23 +38,8 @@ class UserController extends Controller
     }
 
     // Actualizar la información de un usuario
-    public function update(Request $request, $id)
-    {
-        // Validación de datos
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
-
-        $user = User::findOrFail($id); // Buscar al usuario por su ID
-        $user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => $validated['password'] ? bcrypt($validated['password']) : $user->password, // Si la contraseña es nula, no la actualiza
-        ]);
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+    public function update(UpdateUserRequest $request, User $user){
+        $user->update($request->all());
     }
 
     // Eliminar un usuario
@@ -91,17 +61,4 @@ class UserController extends Controller
         }
         return new UserCollection($users->paginate()->appends($request->query()));
     }
-
-    public function apiStore(StoreUserRequest $request){
-        return new UserResource(User::create($request->all()));
-    }
-
-    public function apiUpdate(UpdateUserRequest $request, User $user){
-        $user->update($request->all());
-    }
-
-    public function apiShow(){}
-
-
-    public function apiDestroy(){}
 }

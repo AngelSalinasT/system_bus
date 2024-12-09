@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Bus;
 use App\Http\Resources\BusCollection;
 use App\Filters\BusFilter;
+use App\Http\Requests\StoreBusRequest;
+use App\Http\Requests\UpdateBusRequest;
+use App\Http\Resources\BusResource;
 use Illuminate\Http\Request;
 
 class BusController extends Controller
@@ -23,23 +26,8 @@ class BusController extends Controller
     }
 
     // Almacenar un nuevo autobús en la base de datos
-    public function store(Request $request)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'plates' => 'required|string|max:255|unique:buses',
-            'model' => 'required|string|max:255',
-            'capacity' => 'required|integer',
-        ]);
-
-        // Crear el nuevo autobús
-        Bus::create([
-            'plates' => $request->plates,
-            'model' => $request->model,
-            'capacity' => $request->capacity,
-        ]);
-
-        return redirect()->route('buses.index')->with('success', 'Bus created successfully.');
+    public function Store(StoreBusRequest $request){
+        return new BusResource(Bus::create($request->all()));
     }
 
     // Mostrar el formulario para editar un autobús
@@ -50,23 +38,9 @@ class BusController extends Controller
     }
 
     // Actualizar un autobús en la base de datos
-    public function update(Request $request, $id)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'plates' => 'required|string|max:255|unique:buses,plates,' . $id,
-            'model' => 'required|string|max:255',
-            'capacity' => 'required|integer',
-        ]);
 
-        $bus = Bus::findOrFail($id); // Buscar el autobús por su ID
-        $bus->update([
-            'plates' => $request->plates,
-            'model' => $request->model,
-            'capacity' => $request->capacity,
-        ]);
-
-        return redirect()->route('buses.index')->with('success', 'Bus updated successfully.');
+    public function update(UpdateBusRequest $request, Bus $Bus){
+        $Bus->update($request->all());
     }
 
     // Eliminar un autobús
