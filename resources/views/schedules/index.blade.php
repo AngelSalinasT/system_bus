@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Branches') }}
+            {{ __('Schedule') }}
         </h2>
     </x-slot>
 
@@ -11,7 +11,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                 <!-- Ajustamos el max-width de este div si es necesario -->
                 <div class="w-full px-6">
-                    @livewire('branch-component')
+                    @livewire('schedule-component')
                 </div>
             </div>
         </div>

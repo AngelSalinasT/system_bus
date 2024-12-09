@@ -1,5 +1,4 @@
 <div>
-
     <!-- Mensaje de éxito o error -->
     @if (session()->has('message'))
         <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-md mb-4">
@@ -15,9 +14,9 @@
     <!-- Formulario de creación/edición -->
     <form wire:submit.prevent="{{ $isEditMode ? 'updateBus' : 'createBus' }}" class="space-y-4 max-w-md mx-auto">
         <div>
-            <label for="license_plate" class="block text-sm font-medium text-gray-700">License Plate</label>
-            <input type="text" wire:model="license_plate" id="license_plate" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="License Plate">
-            @error('license_plate') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            <label for="plates" class="block text-sm font-medium text-gray-700">Plates</label>
+            <input type="text" wire:model="plates" id="plates" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Plates">
+            @error('plates') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <div>
@@ -32,17 +31,6 @@
             @error('capacity') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
         </div>
 
-        <div>
-            <label for="branch_id" class="block text-sm font-medium text-gray-700">Branch</label>
-            <select wire:model="branch_id" id="branch_id" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
-                <option value="">-- Select a Branch --</option>
-                @foreach ($branches as $branch)
-                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                @endforeach
-            </select>
-            @error('branch_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-        </div>
-
         <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
             {{ $isEditMode ? 'Update Bus' : 'Create Bus' }}
         </button>
@@ -53,20 +41,18 @@
         <table class="table-auto w-full border-separate border-spacing-2">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">License Plate</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Plates</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Model</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Capacity</th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Branch</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($buses as $bus)
                     <tr>
-                        <td class="px-4 py-2 text-sm">{{ $bus->license_plate }}</td>
+                        <td class="px-4 py-2 text-sm">{{ $bus->plates }}</td>
                         <td class="px-4 py-2 text-sm">{{ $bus->model }}</td>
                         <td class="px-4 py-2 text-sm">{{ $bus->capacity }}</td>
-                        <td class="px-4 py-2 text-sm">{{ $bus->branch->name ?? 'N/A' }}</td>
                         <td class="px-4 py-2 text-sm">
                             <button wire:click="editBus({{ $bus->id }})" class="btn btn-info bg-yellow-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-yellow-600">
                                 Edit
