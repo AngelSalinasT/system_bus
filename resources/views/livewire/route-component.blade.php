@@ -1,5 +1,4 @@
 <div>
-    <h2 class="text-3xl font-semibold mb-6">Routes</h2>
 
     <!-- Mensaje de éxito o error -->
     @if (session()->has('message'))
@@ -10,7 +9,7 @@
 
     <!-- Botón para crear una nueva ruta -->
     <button wire:click="resetFields"
-        class="btn btn-primary mb-4 bg-blue-800 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
+        class="btn btn-primary mb-4 bg-blue-800 text-white px-4 py-2 mt-6 rounded-md shadow-sm hover:bg-blue-600">
         Add New Route
     </button>
 
@@ -97,8 +96,8 @@
 
             <div>
                 <label for="branch_id" class="block text-sm font-medium text-gray-700">Branch</label>
-                <select wire:model="branch_id" id="branch_id"
-                    class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm">
+                <select wire:model="branch_id" id="branch_id" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
+                    <option value="">-- Select a Branch --</option>
                     @foreach ($branches as $branch)
                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                     @endforeach

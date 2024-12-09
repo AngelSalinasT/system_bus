@@ -1,6 +1,4 @@
 <div>
-    <h2 class="text-3xl font-semibold mb-6">Users</h2>
-
     <!-- Mensaje de éxito o error -->
     @if (session()->has('message'))
         <div class="alert alert-success bg-green-100 text-green-800 p-4 rounded-md mb-4">
@@ -9,7 +7,7 @@
     @endif
 
     <!-- Botón para crear un nuevo usuario -->
-    <button wire:click="resetFields" class="btn btn-primary mb-4 bg-blue-800 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
+    <button wire:click="resetFields" class="btn btn-primary mb-4 mt-6 bg-blue-800 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
         Add New User
     </button>
 
@@ -27,7 +25,20 @@
             @error('email') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
         </div>
 
-        @if (!$isEditMode)
+        <div>
+            <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+            <select wire:model="role" id="role" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
+                <option value="">-- Select a Role --</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
+            @error('role')
+                <span class="text-red-600 text-sm">{{ $message }}</span>
+            @enderror
+        </div>
+
+        <!-- Mostrar campo de contraseña solo cuando estamos en modo de edición -->
+        @if (!$isEditMode || $password)
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 <input type="password" wire:model="password" id="password" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Password">
@@ -47,6 +58,7 @@
                 <tr>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Name</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Email</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Role</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Actions</th>
                 </tr>
             </thead>
@@ -55,6 +67,7 @@
                     <tr>
                         <td class="px-4 py-2 text-sm">{{ $user->name }}</td>
                         <td class="px-4 py-2 text-sm">{{ $user->email }}</td>
+                        <td class="px-4 py-2 text-sm">{{ $user->role }}</td>
                         <td class="px-4 py-2 text-sm">
                             <button wire:click="editUser({{ $user->id }})" class="btn btn-info bg-yellow-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-yellow-600">
                                 Edit

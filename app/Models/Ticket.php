@@ -2,28 +2,37 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
+    use HasFactory;
+
+    // Atributos que se pueden asignar masivamente
     protected $fillable = [
-        'id_user',
-        'id_schedule',
-        'booking_code',
-        'amount',
-        'purchase_date',
-        ];
+        'passenger_name',
+        'passenger_email',
+        'seat_number',
+        'bus_id',
+        'user_id',  // ID del cliente que compra el boleto
+    ];
 
-        // Relation: A ticket belongs to a user
-        public function user()
-        {
-        return $this->belongsTo(User::class, 'id_user');
-        }
+    // Relación con el bus
+    public function bus()
+    {
+        return $this->belongsTo(Bus::class);
+    }
 
-        // Relation: A ticket belongs to a timetable
-        public function schedule()
-        {
-        return $this->belongsTo(Schedule::class, 'id_timetable');
-        }
+    // Relación con el usuario que compra el boleto
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Método para generar un ticket number dinámicamente
+    public function generateTicketNumber()
+    {
+        return 'TICKET-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
+    }
 }

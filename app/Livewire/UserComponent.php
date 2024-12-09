@@ -2,103 +2,104 @@
 
 namespace App\Livewire;
 
+use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Component;
+use Illuminate\Validation\Rule;
 
 class UserComponent extends Component
 {
-    public $users, $user_id;
-    public $name, $email, $password, $password_confirmation;
+    public $users;
+    public $name, $email, $role, $password, $password_confirmation, $isEditMode = false, $userId;
 
-    public $isEditMode = false;
-
-    // Renderizar la vista con todos los usuarios
-    public function render()
+    // Inicialización de los usuarios
+    public function mount()
     {
-        $this->users = User::all(); // Cargar todos los usuarios
-        return view('livewire.user-component');
+        $this->users = User::all();
     }
 
-    // Reiniciar los campos
+    // Función para resetear los campos del formulario
     public function resetFields()
     {
         $this->name = '';
         $this->email = '';
+        $this->role = '';
         $this->password = '';
         $this->password_confirmation = '';
         $this->isEditMode = false;
     }
 
-    // Crear un nuevo usuario
-    public function store()
+    // Función para crear un nuevo usuario
+    public function createUser()
     {
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|same:password_confirmation',
+            'role' => 'required|in:admin,user',
+            'password' => 'required|string|min:8|confirmed', // Validación de contraseña
         ]);
 
         User::create([
             'name' => $this->name,
             'email' => $this->email,
-            'password' => Hash::make($this->password),
-        ]);
-
-        session()->flash('success', 'User created successfully.');
-        $this->resetFields();
-    }
-
-    // Crear nuevo usuario
-    public function createUser()
-    {
-        $this->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-        ]);
-
-        User::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => bcrypt('password'), // Contraseña por defecto
+            'role' => $this->role,
+            'password' => Hash::make($this->password), // Encriptamos la contraseña
         ]);
 
         session()->flash('message', 'User created successfully.');
         $this->resetFields();
     }
 
-    public function editUser($id)
+    // Función para editar un usuario existente
+    public function editUser($userId)
     {
-        $user = User::find($id);
-        $this->name = $user->name;      // Asigna el nombre al formulario
-        $this->email = $user->email;    // Asigna el email al formulario
-        $this->user_id = $user->id;      // Guarda el ID del usuario
-        $this->isEditMode = true;       // Cambia a modo de edición
+        $this->isEditMode = true;
+        $user = User::find($userId);
+
+        $this->userId = $user->id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->role = $user->role;
+        $this->password = ''; // No mostramos la contraseña en la edición
+        $this->password_confirmation = ''; // Para manejar la confirmación de la contraseña
     }
 
-
-    // Actualizar usuario
+    // Función para actualizar un usuario
     public function updateUser()
     {
         $this->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $this->user_id,
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->userId)],
+            'role' => 'required|in:admin,user',
+            // Validación de la contraseña solo si es nueva
+            'password' => 'nullable|string|min:8|confirmed', // Es opcional durante la edición
         ]);
 
-        $user = User::find($this->user_id);
-        $user->update([
-            'name' => $this->name,
-            'email' => $this->email,
-        ]);
+        $user = User::find($this->userId);
+
+        // Si la contraseña fue proporcionada, la actualizamos
+        if ($this->password) {
+            $user->password = Hash::make($this->password);
+        }
+
+        $user->name = $this->name;
+        $user->email = $this->email;
+        $user->role = $this->role;
+        $user->save();
 
         session()->flash('message', 'User updated successfully.');
         $this->resetFields();
     }
 
-    // Eliminar usuario
-    public function deleteUser($id)
+    // Función para eliminar un usuario
+    public function deleteUser($userId)
     {
-        User::find($id)->delete();
+        User::find($userId)->delete();
         session()->flash('message', 'User deleted successfully.');
+    }
+
+    public function render()
+    {
+        return view('livewire.user-component');
     }
 }
