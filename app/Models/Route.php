@@ -10,12 +10,12 @@ class Route extends Model
     use HasFactory;
     // Massively assignable attributes
     protected $fillable = [
-    'route_name',
-    'origin',
-    'destination',
-    'distance',
-    'estimated_time',
-    'branch_id',
+        'route_name',
+        'origin',
+        'destination',
+        'distance',
+        'estimated_time',
+        'branch_id',
     ];
 
     // Relationship: A route belongs to a branch

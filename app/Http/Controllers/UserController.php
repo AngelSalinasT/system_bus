@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\UserFilter;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -75,4 +80,28 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
+
+    public function apiIndex(Request $request){
+        $filter = new UserFilter();
+        $queryItems = $filter->transform($request);
+        $includeTickets = request()->query('includeTickets');
+        $users = User::where($queryItems);
+        if($includeTickets){
+            $users = $users->with('tickets');
+        }
+        return new UserCollection($users->paginate()->appends($request->query()));
+    }
+
+    public function apiStore(StoreUserRequest $request){
+        return new UserResource(User::create($request->all()));
+    }
+
+    public function apiUpdate(UpdateUserRequest $request, User $user){
+        $user->update($request->all());
+    }
+
+    public function apiShow(){}
+
+
+    public function apiDestroy(){}
 }

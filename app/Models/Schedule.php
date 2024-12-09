@@ -10,11 +10,11 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-    'route_id',
-    'bus_id',
-    'date',
-    'departure_time',
-    'arrival_time',
+        'route_id',
+        'bus_id',
+        'date',
+        'departure_time',
+        'arrival_time',
     ];
 
     // Relation: A schedule belongs to a route

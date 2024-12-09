@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Route;
 use App\Models\Branch;
+use App\Http\Resources\RouteCollection;
+use App\Filters\RouteFilter;
 use Illuminate\Http\Request;
 
 class RouteController extends Controller
@@ -85,5 +87,16 @@ class RouteController extends Controller
         $route->delete(); // Eliminar la ruta
 
         return redirect()->route('routes.index')->with('success', 'Route deleted successfully.');
+    }
+
+    public function apiIndex(Request $request){
+        $filter = new RouteFilter();
+        $queryItems = $filter->transform($request);
+        $includeSchedules = request()->query('includeSchedules');
+        $routes = Route::where($queryItems);
+        if($includeSchedules){
+            $routes = $routes->with('schedules');
+        }
+        return new RouteCollection($routes->paginate()->appends($request->query()));
     }
 }

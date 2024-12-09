@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Schedule;
+use App\Filters\TicketFilter;
+use App\Http\Resources\TicketCollection;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -90,5 +92,16 @@ class TicketController extends Controller
         $ticket->delete(); // Eliminar el boleto
 
         return redirect()->route('tickets.index')->with('success', 'Ticket deleted successfully.');
+    }
+
+    public function apiIndex(Request $request){
+        $filter = new TicketFilter();
+        $queryItems = $filter->transform($request);
+        if (count($queryItems) == 0) {
+            return new TicketCollection(Ticket::paginate());
+        }else{
+            $tickets = Ticket::where($queryItems);
+            return new TicketCollection($tickets->paginate()->appends($request->query()));
+        }
     }
 }

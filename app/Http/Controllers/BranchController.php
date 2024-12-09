@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Http\Resources\BranchCollection;
+use App\Filters\BranchFilter;
 use Illuminate\Http\Request;
 
 class BranchController extends Controller
@@ -66,5 +68,16 @@ class BranchController extends Controller
         $branch->delete(); // Eliminar la sucursal
 
         return redirect()->route('branches.index')->with('success', 'Branch deleted successfully.');
+    }
+
+    public function apiIndex(Request $request){
+        $filter = new BranchFilter();
+        $queryItems = $filter->transform($request);
+        $includeRoutes = request()->query('includeRoutes');
+        $Branches = Branch::where($queryItems);
+        if($includeRoutes){
+            $Branches = $Branches->with('routes');
+        }
+        return new BranchCollection($Branches->paginate()->appends($request->query()));
     }
 }

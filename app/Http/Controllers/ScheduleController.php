@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Schedule;
 use App\Models\Route;
 use App\Models\Bus;
+use App\Http\Resources\ScheduleCollection;
+use App\Filters\ScheduleFilter;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -90,5 +92,16 @@ class ScheduleController extends Controller
         $schedule->delete(); // Eliminar el horario
 
         return redirect()->route('schedules.index')->with('success', 'Schedule deleted successfully.');
+    }
+
+    public function apiIndex(Request $request){
+        $filter = new ScheduleFilter();
+        $queryItems = $filter->transform($request);
+        $includeTickets = request()->query('includeTickets');
+        $schedules = Schedule::where($queryItems);
+        if($includeTickets){
+            $schedules = $schedules->with('tickets');
+        }
+        return new ScheduleCollection($schedules->paginate()->appends($request->query()));
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
+use App\Http\Resources\BusCollection;
+use App\Filters\BusFilter;
 use Illuminate\Http\Request;
 
 class BusController extends Controller
@@ -74,5 +76,16 @@ class BusController extends Controller
         $bus->delete(); // Eliminar el autobús
 
         return redirect()->route('buses.index')->with('success', 'Bus deleted successfully.');
+    }
+
+    public function apiIndex(Request $request){
+        $filter = new BusFilter();
+        $queryItems = $filter->transform($request);
+        $includeSchedules = request()->query('includeSchedules');
+        $buses = Bus::where($queryItems);
+        if($includeSchedules){
+            $buses = $buses->with('schedules');
+        }
+        return new BusCollection($buses->paginate()->appends($request->query()));
     }
 }
