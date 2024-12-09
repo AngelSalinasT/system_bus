@@ -7,7 +7,8 @@
     @endif
 
     <!-- Botón para crear un nuevo usuario -->
-    <button wire:click="resetFields" class="btn btn-primary mb-4 mt-6 bg-blue-800 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
+    <button wire:click="resetFields"
+        class="btn btn-primary mb-4 mt-6 bg-blue-800 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
         Add New User
     </button>
 
@@ -15,19 +16,26 @@
     <form wire:submit.prevent="{{ $isEditMode ? 'updateUser' : 'createUser' }}" class="space-y-4 max-w-md mx-auto">
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-            <input type="text" wire:model="name" id="name" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Name">
-            @error('name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            <input type="text" wire:model="name" id="name"
+                class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Name">
+            @error('name')
+                <span class="text-red-600 text-sm">{{ $message }}</span>
+            @enderror
         </div>
 
         <div>
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-            <input type="email" wire:model="email" id="email" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Email">
-            @error('email') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            <input type="email" wire:model="email" id="email"
+                class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Email">
+            @error('email')
+                <span class="text-red-600 text-sm">{{ $message }}</span>
+            @enderror
         </div>
 
         <div>
             <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-            <select wire:model="role" id="role" class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
+            <select wire:model="role" id="role"
+                class="form-select mt-1 block w-full p-2 border rounded-md shadow-sm">
                 <option value="">-- Select a Role --</option>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
@@ -41,12 +49,26 @@
         @if (!$isEditMode || $password)
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" wire:model="password" id="password" class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Password">
-                @error('password') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                <input type="password" wire:model="password" id="password"
+                    class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Password">
+                @error('password')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm
+                    Password</label>
+                <input type="password" wire:model="password_confirmation" id="password_confirmation"
+                    class="form-input mt-1 block w-full p-2 border rounded-md shadow-sm" placeholder="Confirm Password">
+                @error('password_confirmation')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
             </div>
         @endif
 
-        <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
+        <button type="submit"
+            class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">
             {{ $isEditMode ? 'Update User' : 'Create User' }}
         </button>
     </form>
@@ -63,16 +85,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($users as $user)
+                @foreach ($users as $user)
                     <tr>
                         <td class="px-4 py-2 text-sm">{{ $user->name }}</td>
                         <td class="px-4 py-2 text-sm">{{ $user->email }}</td>
                         <td class="px-4 py-2 text-sm">{{ $user->role }}</td>
                         <td class="px-4 py-2 text-sm">
-                            <button wire:click="editUser({{ $user->id }})" class="btn btn-info bg-yellow-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-yellow-600">
+                            <button wire:click="editUser({{ $user->id }})"
+                                class="btn btn-info bg-yellow-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-yellow-600">
                                 Edit
                             </button>
-                            <button wire:click="deleteUser({{ $user->id }})" class="btn btn-info bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-800">
+                            <button wire:click="deleteUser({{ $user->id }})"
+                                class="btn btn-info bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-800">
                                 Delete
                             </button>
                         </td>
