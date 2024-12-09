@@ -7,6 +7,9 @@ use App\Models\Route;
 use App\Models\Bus;
 use App\Http\Resources\ScheduleCollection;
 use App\Filters\ScheduleFilter;
+use App\Http\Requests\StoreScheduleRequest;
+use App\Http\Resources\ScheduleResource;
+use App\Http\Requests\UpdateScheduleRequest;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -29,27 +32,8 @@ class ScheduleController extends Controller
     }
 
     // Almacenar un nuevo horario en la base de datos
-    public function store(Request $request)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'route_id' => 'required|exists:routes,id',
-            'bus_id' => 'required|exists:buses,id',
-            'date' => 'required|date',
-            'departure_time' => 'required|date_format:H:i',
-            'arrival_time' => 'nullable|date_format:H:i',
-        ]);
-
-        // Crear el nuevo horario
-        Schedule::create([
-            'route_id' => $request->route_id,
-            'bus_id' => $request->bus_id,
-            'date' => $request->date,
-            'departure_time' => $request->departure_time,
-            'arrival_time' => $request->arrival_time,
-        ]);
-
-        return redirect()->route('schedules.index')->with('success', 'Schedule created successfully.');
+    public function Store(StoreScheduleRequest $request){
+        return new ScheduleResource(Schedule::create($request->all()));
     }
 
     // Mostrar el formulario para editar un horario
@@ -62,27 +46,8 @@ class ScheduleController extends Controller
     }
 
     // Actualizar un horario en la base de datos
-    public function update(Request $request, $id)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'route_id' => 'required|exists:routes,id',
-            'bus_id' => 'required|exists:buses,id',
-            'date' => 'required|date',
-            'departure_time' => 'required|date_format:H:i',
-            'arrival_time' => 'nullable|date_format:H:i',
-        ]);
-
-        $schedule = Schedule::findOrFail($id); // Buscar el horario por su ID
-        $schedule->update([
-            'route_id' => $request->route_id,
-            'bus_id' => $request->bus_id,
-            'date' => $request->date,
-            'departure_time' => $request->departure_time,
-            'arrival_time' => $request->arrival_time,
-        ]);
-
-        return redirect()->route('schedules.index')->with('success', 'Schedule updated successfully.');
+    public function update(UpdateScheduleRequest $request, Schedule $Schedule){
+        $Schedule->update($request->all());
     }
 
     // Eliminar un horario
@@ -104,4 +69,5 @@ class ScheduleController extends Controller
         }
         return new ScheduleCollection($schedules->paginate()->appends($request->query()));
     }
+
 }

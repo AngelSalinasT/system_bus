@@ -7,6 +7,9 @@ use App\Models\User;
 use App\Models\Schedule;
 use App\Filters\TicketFilter;
 use App\Http\Resources\TicketCollection;
+use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketRequest;
+use App\Http\Resources\TicketResource;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -29,27 +32,8 @@ class TicketController extends Controller
     }
 
     // Almacenar un nuevo boleto en la base de datos
-    public function store(Request $request)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'user_id' => 'required|exists:users,id', // Verificar que el usuario exista
-            'schedule_id' => 'required|exists:schedules,id', // Verificar que el horario exista
-            'booking_code' => 'required|string|unique:tickets',
-            'amount' => 'required|numeric|min:0',
-            'purchase_date' => 'required|date',
-        ]);
-
-        // Crear el nuevo boleto
-        Ticket::create([
-            'user_id' => $request->user_id,
-            'schedule_id' => $request->schedule_id,
-            'booking_code' => $request->booking_code,
-            'amount' => $request->amount,
-            'purchase_date' => $request->purchase_date,
-        ]);
-
-        return redirect()->route('tickets.index')->with('success', 'Ticket created successfully.');
+    public function Store(StoreTicketRequest $request){
+        return new TicketResource(Ticket::create($request->all()));
     }
 
     // Mostrar el formulario para editar un boleto
@@ -62,27 +46,8 @@ class TicketController extends Controller
     }
 
     // Actualizar un boleto en la base de datos
-    public function update(Request $request, $id)
-    {
-        // Validación de los datos del formulario
-        $request->validate([
-            'user_id' => 'required|exists:users,id', // Verificar que el usuario exista
-            'schedule_id' => 'required|exists:schedules,id', // Verificar que el horario exista
-            'booking_code' => 'required|string|unique:tickets,booking_code,' . $id,
-            'amount' => 'required|numeric|min:0',
-            'purchase_date' => 'required|date',
-        ]);
-
-        $ticket = Ticket::findOrFail($id); // Buscar el boleto por su ID
-        $ticket->update([
-            'user_id' => $request->user_id,
-            'schedule_id' => $request->schedule_id,
-            'booking_code' => $request->booking_code,
-            'amount' => $request->amount,
-            'purchase_date' => $request->purchase_date,
-        ]);
-
-        return redirect()->route('tickets.index')->with('success', 'Ticket updated successfully.');
+    public function update(UpdateTicketRequest $request, Ticket $ticket){
+        $ticket->update($request->all());
     }
 
     // Eliminar un boleto
@@ -104,4 +69,5 @@ class TicketController extends Controller
             return new TicketCollection($tickets->paginate()->appends($request->query()));
         }
     }
+
 }

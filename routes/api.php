@@ -15,5 +15,10 @@ Route::get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
     Route::apiResource('users', UserController::class);
+    Route::apiResource('schedules', ScheduleController::class);
+    Route::apiResource('tickets', TicketController::class);
+    Route::apiResource('routes', RouteController::class);
+    Route::apiResource('buses', BusController::class);
+    Route::apiResource('branches', BranchController::class);
 
 });
